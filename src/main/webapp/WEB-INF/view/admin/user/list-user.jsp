@@ -39,9 +39,9 @@
                                             <td>${user.email}</td>
                                             <td>${user.fullName}</td>
                                             <td>
-                                                <a href="" class="btn btn-success">View</a>
-                                                <a href="" class="btn btn-warning mx-3">Update</a>
-                                                <a href="" class="btn btn-danger">Delete</a>
+                                                <a href="user-info/${user.id}" class="btn btn-success">View</a>
+                                                <a href="user-update/${user.id}" class="btn btn-warning mx-3">Update</a>
+                                                <a href="user-delete/${user.id}" class="btn btn-danger">Delete</a>
                                             </td>
                                         </tr>
                                     </c:forEach>

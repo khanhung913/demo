@@ -1,10 +1,10 @@
 package com.iphoneshop.demo.controller;
 
 import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -27,6 +27,38 @@ public class UserController {
         return "admin/user/list-user";
     }
 
+    @RequestMapping("admin/user-info/{id}")
+    public String UserInfoPage(Model model, @PathVariable long id) {
+        User user = this.userService.handleFindById(id);
+        model.addAttribute("user", user);
+        return "admin/user/userInfo";
+    }
+
+    @RequestMapping("admin/user-update/{id}")
+    public String UserUpdatePage(Model model, @PathVariable long id) {
+        User user = this.userService.handleFindById(id);
+        model.addAttribute("newUser", user);
+        return "admin/user/userUpdate";
+    }
+
+    @RequestMapping(value = "admin/user-update", method = RequestMethod.POST)
+    public String UserUpdateSuccess(Model model, @ModelAttribute("newUser") User user) {
+        User currentUser = this.userService.handleFindById(user.getId());
+        if (currentUser != null) {
+            currentUser.setPhone(user.getPhone());
+            currentUser.setFullName(user.getFullName());
+            currentUser.setAddress(user.getAddress());
+            this.userService.handleSaveUser(currentUser);
+        }
+        return "redirect:/admin/user";
+    }
+
+    @RequestMapping("admin/user-delete/{id}")
+    public String UserDelete(Model model, @PathVariable long id) {
+        this.userService.handleRemoveUserById(id);
+        return "redirect:/admin/user";
+    }
+
     @RequestMapping("/admin/user/create")
     public String CreateUserPage(Model model) {
         model.addAttribute("newUser", new User());
@@ -36,8 +68,6 @@ public class UserController {
     @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
     public String CreateSuccess(Model model, @ModelAttribute("newUser") User user) {
         this.userService.handleSaveUser(user);
-        List<User> listUser = this.userService.handleFindByEmail();
-        // System.out.println(listUser);
-        return "admin/user/create";
+        return "redirect:/admin/user";
     }
 }
